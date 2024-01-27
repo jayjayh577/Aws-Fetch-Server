@@ -63,8 +63,6 @@ app.get('/collections/:collectionName/search', async function (req, res, next) {
   }
 });
 
-
-
 // Route to retrieve documents from a collection with sorting
 app.get('/collections/:collectionName', async function (req, res, next) {
   try {
