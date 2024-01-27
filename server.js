@@ -102,6 +102,7 @@ app.delete('/collections/:collectionName/:documentId', async function (req, res,
 
     // Check if the document was deleted
     if (result.deletedCount === 1) {
+      console.log("Item with object id "+ documentId + "deleted")
       res.status(204).send(); // No content (success)
     } else {
       res.status(404).send({ message: 'Document not found' });
