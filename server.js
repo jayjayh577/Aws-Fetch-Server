@@ -27,6 +27,36 @@ app.param('collectionName', async function (req, res, next, collectionName) {
 });
 app.use(cors());
 
+app.get('/collections/:collectionName/search', async function (req, res, next) {
+  try {
+    // Ensure the database connection is established
+    await dbConnection.connectToDatabase();
+
+    // Access the database instance
+    const db = dbConnection.getDbInstance();
+
+    // Set req.collection for further use in the route
+    req.collection = db.collection(req.params.collectionName);
+
+    // Extract the search query from the request parameters
+    const searchQuery = req.query.q; // Assuming the search query is passed as a query parameter 'q'
+
+    // Use the collection to find documents matching the search query
+    const results = await req.collection.find({
+      $or: [
+        { field1: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field1' with the actual field you want to search
+        { field2: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field2' with another field if needed
+        // Add more fields as needed
+      ]
+    }).toArray();
+
+    // Send the search results in the response
+    res.send(results);
+  } catch (error) {
+    console.error('Error during route processing:', error);
+    next(error); // Pass the error to the next middleware or error handler
+  }
+});
 // Route to retrieve documents from a collection with sorting
 app.get('/collections/:collectionName', async function (req, res, next) {
   try {
