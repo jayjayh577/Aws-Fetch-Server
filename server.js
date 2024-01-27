@@ -112,9 +112,6 @@ app.delete('/collections/:collectionName/:documentId', async function (req, res,
   }
 });
 
-
-
-// Route to create a new document
 app.post('/collections/:collectionName', async function (req, res, next) {
   try {
     // Ensure the database connection is established
@@ -126,29 +123,24 @@ app.post('/collections/:collectionName', async function (req, res, next) {
     // Set req.collection for further use in the route
     req.collection = db.collection(req.params.collectionName);
 
-    // Extract the document data from the request body
-    const newDocument = req.body;
+    // Extract the data from the request body
+    const postData = req.body;
 
     // Use the collection to insert a new document
-    const result = await req.collection.insertOne(newDocument);
-
-    // Log the result for debugging
-    console.log('Insert result:', result);
+    const result = await req.collection.insertOne(postData);
+    console.log('Insert Result:', result);    
 
     // Check if the document was inserted
     if (result.insertedCount === 1) {
-      res.status(201).send(result.ops[0]); // Created (success)
+      res.status(201).send(result.ops[0]); // Created (success) and send the inserted document
     } else {
-      res.status(500).send({ message: 'Error creating document' });
+      res.status(500).send({ message: 'Failed to insert document' });
     }
   } catch (error) {
     console.error('Error during route processing:', error);
     next(error); // Pass the error to the next middleware or error handler
   }
 });
-
-
-
 
 
 // Start the server
