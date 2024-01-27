@@ -38,17 +38,22 @@ app.get('/collections/:collectionName/search', async function (req, res, next) {
     // Set req.collection for further use in the route
     req.collection = db.collection(req.params.collectionName);
 
-    // Extract the search query from the request parameters
-    const searchQuery = req.query.q; // Assuming the search query is passed as a query parameter 'q'
+    // Extract the search query parameters from the request
+    const { subject, location } = req.query;
+
+    // Build the MongoDB query based on the provided parameters
+    const query = {};
+
+    if (subject) {
+      query.subject = { $regex: new RegExp(subject, 'i') };
+    }
+
+    if (location) {
+      query.location = { $regex: new RegExp(location, 'i') };
+    }
 
     // Use the collection to find documents matching the search query
-    const results = await req.collection.find({
-      $or: [
-        { subject: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field1' with the actual field you want to search
-        { location: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field2' with another field if needed
-        // Add more fields as needed
-      ]
-    }).toArray();
+    const results = await req.collection.find(query).toArray();
 
     // Send the search results in the response
     res.send(results);
@@ -57,6 +62,9 @@ app.get('/collections/:collectionName/search', async function (req, res, next) {
     next(error); // Pass the error to the next middleware or error handler
   }
 });
+
+
+
 // Route to retrieve documents from a collection with sorting
 app.get('/collections/:collectionName', async function (req, res, next) {
   try {
