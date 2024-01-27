@@ -44,8 +44,8 @@ app.get('/collections/:collectionName/search', async function (req, res, next) {
     // Use the collection to find documents matching the search query
     const results = await req.collection.find({
       $or: [
-        { field1: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field1' with the actual field you want to search
-        { field2: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field2' with another field if needed
+        { subject: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field1' with the actual field you want to search
+        { location: { $regex: new RegExp(searchQuery, 'i') } }, // Replace 'field2' with another field if needed
         // Add more fields as needed
       ]
     }).toArray();
