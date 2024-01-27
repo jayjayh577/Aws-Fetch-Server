@@ -98,7 +98,7 @@ app.delete('/collections/:collectionName/:documentId', async function (req, res,
     const documentId = req.params.documentId;
 
     // Use the collection to delete a document by its ID
-    const result = await req.collection.deleteOne({ _id: new ObjectId(documentId) });
+    const result = await req.collection.findOne({ _id: new ObjectId(documentId) });
 
     // Check if the document was deleted
     if (result.deletedCount === 1) {
