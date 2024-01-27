@@ -83,7 +83,6 @@ app.get('/collections/:collectionName/:documentId', async function (req, res, ne
   }
 });
 
-// Route to delete a document by its ID
 app.delete('/collections/:collectionName/:documentId', async function (req, res, next) {
   try {
     // Ensure the database connection is established
@@ -109,9 +108,16 @@ app.delete('/collections/:collectionName/:documentId', async function (req, res,
     }
   } catch (error) {
     console.error('Error during route processing:', error);
+
+    // Log the specific MongoDB error message
+    if (error.message) {
+      console.error('MongoDB Error:', error.message);
+    }
+
     next(error); // Pass the error to the next middleware or error handler
   }
 });
+
 
 // Route to create a new document
 app.post('/collections/:collectionName', async function (req, res, next) {
