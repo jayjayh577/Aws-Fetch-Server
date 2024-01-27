@@ -98,7 +98,7 @@ app.delete('/collections/:collectionName/:documentId', async function (req, res,
     const documentId = req.params.documentId;
 
     // Use the collection to delete a document by its ID
-    const result = await req.collection.findOne({ _id: new ObjectId(documentId) });
+    const result = await req.collection.deleteOne({ _id: new ObjectId(documentId) });
 
     // Check if the document was deleted
     if (result.deletedCount === 1) {
@@ -108,15 +108,10 @@ app.delete('/collections/:collectionName/:documentId', async function (req, res,
     }
   } catch (error) {
     console.error('Error during route processing:', error);
-
-    // Log the specific MongoDB error message
-    if (error.message) {
-      console.error('MongoDB Error:', error.message);
-    }
-
     next(error); // Pass the error to the next middleware or error handler
   }
 });
+
 
 
 // Route to create a new document
