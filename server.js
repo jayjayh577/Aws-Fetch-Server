@@ -164,20 +164,27 @@ app.post('/collections/:collectionName', async function (req, res, next) {
     const postData = req.body;
 
     // Use the collection to insert a new document
-    const result = await req.collection.insertOne(postData);
-    console.log('Insert Result:', result);    
+    try {
+      const result = await req.collection.insertOne(postData);
+      console.log('Insert Result:', result);
 
-    // Check if the document was inserted
-    if (result.insertedCount === 1) {
-      res.status(201).send(result.ops[0]); // Created (success) and send the inserted document
-    } else {
-      res.status(500).send({ message: 'Failed to insert document' });
+      // Check if the document was inserted
+      if (result.insertedCount === 1) {
+        res.status(201).send(result.ops[0]); // Created (success) and send the inserted document
+      } else {
+        console.error('Failed to insert document. Insert result:', result);
+        res.status(500).send({ message: 'Failed to insert document' });
+      }
+    } catch (insertError) {
+      console.error('Error during document insertion:', insertError);
+      res.status(500).send({ message: 'Failed to insert document', error: insertError.message });
     }
   } catch (error) {
     console.error('Error during route processing:', error);
-    next(error); // Pass the error to the next middleware or error handler
+    res.status(500).send({ message: 'Internal Server Error', error: error.message });
   }
 });
+
 
 
 // Start the server
