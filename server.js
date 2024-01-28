@@ -196,11 +196,14 @@ app.put('/collections/:collectionName/:documentId', async function (req, res, ne
     // Extract the data from the request body
     const updateData = req.body;
 
-    // Use the collection to update the document by its ID
-    const result = await req.collection.updateOne(
-      { _id: new ObjectId(documentId) },
-      { $set: updateData }
-    );
+
+    console.log('Update Data:', updateData);
+const result = await req.collection.updateOne(
+  { _id: new ObjectId(documentId) },
+  { $set: updateData }
+);
+console.log('Type of Update Data:', typeof updateData);
+
 
     // Check if the document was updated
     if (result.modifiedCount === 1) {
