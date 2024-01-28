@@ -199,6 +199,7 @@ app.put('/collections/:collectionName/:documentId', async function (req, res, ne
     // Use the collection to update the document by its ID
     const result = await req.collection.updateOne(
       { _id: new ObjectId(documentId) },
+      { $set: updateData }
     );
 
     // Check if the document was updated
