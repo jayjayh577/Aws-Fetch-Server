@@ -179,6 +179,39 @@ app.post('/collections/:collectionName', async function (req, res, next) {
   }
 });
 
+app.put('/collections/:collectionName/:documentId', async function (req, res, next) {
+  try {
+    // Ensure the database connection is established
+    await dbConnection.connectToDatabase();
+
+    // Access the database instance
+    const db = dbConnection.getDbInstance();
+
+    // Set req.collection for further use in the route
+    req.collection = db.collection(req.params.collectionName);
+
+    // Extract the document ID from the request parameters
+    const documentId = req.params.documentId;
+
+    // Extract the data from the request body
+    const updateData = req.body;
+
+    // Use the collection to update the document by its ID
+    const result = await req.collection.updateOne(
+      { _id: new ObjectId(documentId) },
+    );
+
+    // Check if the document was updated
+    if (result.modifiedCount === 1) {
+      res.status(200).send({ message: 'Document updated successfully' });
+    } else {
+      res.status(404).send({ message: 'Document not found or not updated' });
+    }
+  } catch (error) {
+    console.error('Error during route processing:', error);
+    next(error); // Pass the error to the next middleware or error handler
+  }
+});
 
 
 // Start the server
